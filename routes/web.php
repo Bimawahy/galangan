@@ -26,6 +26,9 @@ Route::middleware(['auth', 'role:admin,master'])->group(function () {
     Route::get('/kasir', [PosController::class, 'index'])->name('pos');
     Route::post('/kasir', [PosController::class, 'store'])->name('pos.store');
 
+    Route::get('/surat-jalan', [SaleController::class, 'suratJalanIndex'])->name('delivery.index');
+    Route::get('/surat-jalan/{sale}', [SaleController::class, 'suratJalan'])->name('delivery.show');
+
     Route::resource('produk', ProductController::class)
         ->except('show')->parameters(['produk' => 'product'])->names('products');
 

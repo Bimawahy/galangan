@@ -71,6 +71,7 @@
         @if (in_array($role, ['admin', 'master']))
             <a href="{{ route('pos') }}" class="{{ request()->routeIs('pos') ? 'on' : '' }}">🧾 Kasir (POS)</a>
             <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'on' : '' }}">🪨 Produk &amp; Stok</a>
+            <a href="{{ route('delivery.index') }}" class="{{ request()->routeIs('delivery.*') ? 'on' : '' }}">🚚 Surat Jalan</a>
         @endif
         <a href="{{ route('sales.index') }}" class="{{ request()->routeIs('sales.*') ? 'on' : '' }}">📒 Penjualan</a>
         @if (auth()->user()->role === 'master')

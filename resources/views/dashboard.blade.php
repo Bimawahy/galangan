@@ -1,17 +1,20 @@
 @extends('layouts.admin')
 @section('title', 'Dashboard')
 @section('content')
-@php $rp = fn ($n) => 'Rp '.number_format($n, 0, ',', '.'); $max = max(1, $chart->max('total')); @endphp
+@php $rp = fn ($n) => 'Rp '.number_format($n, 0, ',', '.'); $max = max(1, $chart->max('total'));
+   $role = auth()->user()->activeRole(); $own = in_array($role, ['owner', 'master']); $ops = in_array($role, ['admin', 'master']); @endphp
 <h1>Halo, {{ auth()->user()->name }} 👋</h1>
+{{-- owner: laporan keuangan; admin: operasional harian; master: keduanya --}}
 
 <div class="grid g4" style="margin-bottom:20px">
     <div class="card stat" style="margin:0"><small>Omzet hari ini</small><b>{{ $rp($stats['omzet_hari']) }}</b></div>
     <div class="card stat" style="margin:0"><small>Transaksi hari ini</small><b>{{ $stats['trx_hari'] }}</b></div>
-    <div class="card stat" style="margin:0"><small>Omzet bulan ini</small><b>{{ $rp($stats['omzet_bulan']) }}</b></div>
+    @if ($own)<div class="card stat" style="margin:0"><small>Omzet bulan ini</small><b>{{ $rp($stats['omzet_bulan']) }}</b></div>@endif
     <div class="card stat" style="margin:0"><small>Piutang (tempo)</small><b style="color:var(--danger)">{{ $rp($stats['piutang']) }}</b></div>
 </div>
 
 <div class="grid g2">
+    @if ($own)
     <div class="card">
         <h2>Omzet 7 hari terakhir</h2>
         <div class="bars">
@@ -33,7 +36,9 @@
             @endforelse
         </table>
     </div>
+    @endif
 
+    @if ($ops)
     <div class="card">
         <h2>⚠️ Stok menipis</h2>
         <table>
@@ -58,5 +63,6 @@
             @endforelse
         </table>
     </div>
+    @endif
 </div>
 @endsection

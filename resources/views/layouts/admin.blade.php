@@ -63,22 +63,34 @@
     @stack('head')
 </head>
 <body>
+@php $role = auth()->user()->activeRole(); @endphp
 <aside>
     <div class="brand"><i>⛰️</i> Galian Pasir</div>
     <nav>
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'on' : '' }}">📊 Dashboard</a>
-        <a href="{{ route('pos') }}" class="{{ request()->routeIs('pos') ? 'on' : '' }}">🧾 Kasir (POS)</a>
-        <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'on' : '' }}">🪨 Produk &amp; Stok</a>
+        @if (in_array($role, ['admin', 'master']))
+            <a href="{{ route('pos') }}" class="{{ request()->routeIs('pos') ? 'on' : '' }}">🧾 Kasir (POS)</a>
+            <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'on' : '' }}">🪨 Produk &amp; Stok</a>
+        @endif
         <a href="{{ route('sales.index') }}" class="{{ request()->routeIs('sales.*') ? 'on' : '' }}">📒 Penjualan</a>
+        @if (auth()->user()->role === 'master')
+            <a href="{{ route('master') }}" class="{{ request()->routeIs('master') ? 'on' : '' }}">🛠️ Master</a>
+        @endif
     </nav>
     <div class="who">
-        {{ auth()->user()->name }}<br><span>Admin</span>
+        {{ auth()->user()->name }}<br><span>{{ ucfirst(auth()->user()->role) }}</span>
+        @if ($role !== auth()->user()->role)<br><span class="badge">tampilan: {{ $role }}</span>@endif
         <form method="POST" action="{{ route('logout') }}">@csrf
             <button class="btn ghost sm" type="submit">Keluar</button>
         </form>
     </div>
 </aside>
 <main>
+    @if ($role !== auth()->user()->role)
+        <div class="flash noprint">Master sedang melihat sebagai <b>{{ $role }}</b>.
+            <form method="POST" action="{{ route('master.view', 'master') }}" style="display:inline">@csrf <button class="btn sm">Kembali ke Master</button></form>
+        </div>
+    @endif
     @if (session('ok'))<div class="flash">{{ session('ok') }}</div>@endif
     @yield('content')
 </main>

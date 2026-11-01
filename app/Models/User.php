@@ -23,7 +23,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'is_admin',
+        'role',
     ];
 
     /**
@@ -46,7 +46,12 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
         ];
+    }
+
+    /** Role yang berlaku sekarang; master bisa "melihat sebagai" admin/owner lewat session. */
+    public function activeRole(): ?string
+    {
+        return $this->role === 'master' ? session('view_as', 'master') : $this->role;
     }
 }

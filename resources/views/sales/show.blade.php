@@ -5,7 +5,9 @@
 <div class="noprint row" style="margin-bottom:16px;justify-content:flex-start">
     <a class="btn ghost" href="{{ route('sales.index') }}" style="flex:0 0 auto">← Riwayat</a>
     <button class="btn" onclick="window.print()" style="flex:0 0 auto">🖨️ Cetak Struk</button>
-    <a class="btn ghost" href="{{ route('pos') }}" style="flex:0 0 auto">Transaksi baru</a>
+    @if (in_array(auth()->user()->activeRole(), ['admin', 'master']))
+        <a class="btn ghost" href="{{ route('pos') }}" style="flex:0 0 auto">Transaksi baru</a>
+    @endif
 </div>
 
 <div class="card" style="max-width:640px">
@@ -32,7 +34,7 @@
         @endif
     </table>
 
-    @if ($sale->paid < $sale->total)
+    @if ($sale->paid < $sale->total && in_array(auth()->user()->activeRole(), ['admin', 'master']))
         <form class="noprint" method="POST" action="{{ route('sales.settle', $sale) }}" style="margin-top:16px" onsubmit="return confirm('Tandai transaksi ini lunas?')">
             @csrf <button class="btn">Tandai Lunas</button>
         </form>

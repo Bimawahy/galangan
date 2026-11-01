@@ -9,15 +9,18 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(
-            ['username' => 'admin'],
-            [
-                'name' => 'Administrator',
-                'email' => 'admin@example.com',
-                'password' => 'password',
-                'is_admin' => true,
-            ]
-        );
+        // Produksi: set SEED_PASSWORD di .env sebelum seeding, lalu ganti password lewat aplikasi.
+        foreach (['admin' => 'Administrator', 'owner' => 'Owner', 'master' => 'Master'] as $role => $name) {
+            User::updateOrCreate(
+                ['username' => $role],
+                [
+                    'name' => $name,
+                    'email' => "{$role}@example.com",
+                    'password' => env('SEED_PASSWORD', 'password'),
+                    'role' => $role,
+                ]
+            );
+        }
         $this->call(ProductSeeder::class);
     }
 }
